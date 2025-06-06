@@ -54,7 +54,6 @@ class ViewBudget : AppCompatActivity() {
         close?.setOnClickListener{
             val intent = Intent( this,LandingPage::class.java)
             startActivity(intent)
-
         }
 
 
