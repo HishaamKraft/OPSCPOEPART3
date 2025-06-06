@@ -5,24 +5,23 @@ import android.content.Intent
 import android.os.Bundle
 import android.widget.Button
 import android.widget.EditText
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
+import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.launch
 
 class SignIn : AppCompatActivity() {
 
-    //private lateinit var db: AppDatabase
-    //private lateinit var userDao: UserDao
+    private lateinit var auth: FirebaseAuth
 
     @SuppressLint("MissingInflatedId")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_sign_in)
 
-        //db = AppDatabase.getDatabase(this)
-        //userDao = db.UserDao()
 
-
+        auth = FirebaseAuth.getInstance()
 
         val goToSignUp = findViewById<Button>(R.id.btnsignup)
         goToSignUp.setOnClickListener {
@@ -73,19 +72,25 @@ class SignIn : AppCompatActivity() {
                 return@setOnClickListener
             }
 
-            if (username.isNotBlank() && confirmPassword.isNotBlank()){
-                lifecycleScope.launch {
-                    //userDao.insert(User(username = username, confirmedpassword = confirmPassword  ))
+            auth.createUserWithEmailAndPassword(username, confirmPassword)
+                .addOnCompleteListener { task ->
+                    if (task.isSuccessful) {
+                        Toast.makeText(this, "Registered Successfully!", Toast.LENGTH_SHORT).show()
+                        startActivity(Intent(this, SignUp::class.java))
+                        finish()
+                    } else {
+                        Toast.makeText(
+                            this,
+                            "Failed: ${task.exception?.message}",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
                 }
+            val goToMainPage = findViewById<Button>(R.id.btnBack)
+            goToMainPage?.setOnClickListener {
+                val intent = Intent(this, MainActivity::class.java)
+                startActivity(intent)
             }
-            val intent = Intent( this,SignUp::class.java)
-            startActivity(intent)
-
         }
-        val goToMainPage = findViewById<Button>(R.id.btnBack)
-        goToMainPage?.setOnClickListener{
-            val intent = Intent( this,MainActivity::class.java)
-            startActivity(intent)
         }
     }
-}

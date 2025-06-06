@@ -20,6 +20,8 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.lifecycleScope
+import com.google.firebase.database.DatabaseReference
+import com.google.firebase.database.FirebaseDatabase
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.Calendar
@@ -28,8 +30,7 @@ import java.util.Locale
 class Expenses : AppCompatActivity() {
 
     private var selectedItem: String ?= null
-    //private lateinit var db: AppDatabase
-    //private lateinit var expensesDao: ExpensesDao
+    private lateinit var database: DatabaseReference
 
     private val picId = 123
     private var capturedPhoto: Bitmap? = null
@@ -46,8 +47,7 @@ class Expenses : AppCompatActivity() {
             insets
         }
 
-        //db = AppDatabase.getDatabase(this)
-        //expensesDao = db.ExpensesDao()
+        database = FirebaseDatabase.getInstance().getReference("Expenses")
 
         val dateSelection = findViewById<Button>(R.id.btn_Date)
         val dateDisplay = findViewById<TextView>(R.id.txt_Date_Display)
@@ -156,24 +156,29 @@ class Expenses : AppCompatActivity() {
                 return@setOnClickListener
             }
 
-            /*lifecycleScope.launch {
-                expensesDao.insert(
-                    com.example.poepart2.Data.Expenses(
-                        expenseDate = parsedDate,
-                        categoryItem = category,
-                        description = expenseDescription,
-                        amount = amount
-                    )
-                )
-            }*/
+            if(dateString.isNotEmpty() && category.isNotEmpty() && expenseDescription.isNotEmpty() && expenseAmount.isNotEmpty())
+            {
+                val expenseId = database.push().key
+                val expenseData = ExpensesData(dateString,category,expenseDescription,expenseAmount)
 
-            txtExpenseAmount.text.clear()
-            txtExpenseDescription.text.clear()
-            dateDisplay.text = ""
-            spinner.setSelection(0)
+                if(expenseId != null){
+                    database.child(expenseId).setValue(expenseData)
+                        .addOnSuccessListener {
+                            Toast.makeText(this, "Expense saved successfully!",Toast.LENGTH_SHORT).show()
+                            txtExpenseAmount.text.clear()
+                            txtExpenseDescription.text.clear()
+                            dateDisplay.text = ""
+                            spinner.setSelection(0)
+                        }
+                        .addOnFailureListener {
+                            Toast.makeText(this,"Failed to add expense", Toast.LENGTH_SHORT)
+                                .show()
+                        }
+                }
 
-            Toast.makeText(this@Expenses, "Expense saved successfully!", Toast.LENGTH_SHORT).show()
-
+            }else{
+                Toast.makeText(this, "Please select category", Toast.LENGTH_SHORT).show()
+            }
         }
 
         val viewExpenses = findViewById<Button>(R.id.btnViewExpenses)
