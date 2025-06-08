@@ -145,8 +145,11 @@ class Expenses : AppCompatActivity() {
                 return@setOnClickListener
             }
 
+            val inputFormat = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
+            val outputFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+
             val parsedDate = try {
-                SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).parse(dateString)
+                inputFormat.parse(dateString)
             } catch (e: Exception) {
                 null
             }
@@ -156,10 +159,13 @@ class Expenses : AppCompatActivity() {
                 return@setOnClickListener
             }
 
+            val formattedDateForDB = outputFormat.format(parsedDate)
+
+
             if(dateString.isNotEmpty() && category.isNotEmpty() && expenseDescription.isNotEmpty() && expenseAmount.isNotEmpty())
             {
                 val expenseId = database.push().key
-                val expenseData = ExpensesData(dateString,category,expenseDescription,expenseAmount)
+                val expenseData = ExpensesData(formattedDateForDB,category,expenseDescription,expenseAmount)
 
                 if(expenseId != null){
                     database.child(expenseId).setValue(expenseData)

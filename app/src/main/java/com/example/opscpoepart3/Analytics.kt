@@ -12,6 +12,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.lifecycleScope
+import com.google.firebase.database.DatabaseReference
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -21,8 +22,7 @@ import java.util.Locale
 
 class Analytics : AppCompatActivity() {
 
-    //private lateinit var db: AppDatabase
-    //private lateinit var expensesDao: ExpensesDao
+    private lateinit var database: DatabaseReference
 
     @SuppressLint("MissingInflatedId")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -34,9 +34,6 @@ class Analytics : AppCompatActivity() {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
-
-        //db = AppDatabase.getDatabase(this)
-        //expensesDao = db.ExpensesDao()
 
         val startDateSelection = findViewById<Button>(R.id.btnStartDate)
         val startDateDisplay = findViewById<TextView>(R.id.txtStartDateDisplay)
