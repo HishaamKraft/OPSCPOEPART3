@@ -137,17 +137,16 @@
         tools:ignore="SpeakableTextPresentCheck" />
 
     <Button
-        android:id="@+id/btnViewBudget"
-        android:layout_width="142dp"
-        android:layout_height="55dp"
+        android:id="@+id/btnViewAdvancedAnalytics"
+        android:layout_width="257dp"
+        android:layout_height="51dp"
         android:backgroundTint="#020202"
         android:fontFamily="@font/alatsi"
-        android:text="View Budget"
+        android:text="View Advanced Analytics"
         android:textSize="16sp"
-        android:visibility="invisible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintHorizontal_bias="0.48"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.976" />

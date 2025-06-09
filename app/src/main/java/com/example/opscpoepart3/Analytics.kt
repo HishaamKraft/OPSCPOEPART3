@@ -11,15 +11,11 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
-import androidx.lifecycle.lifecycleScope
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
@@ -164,9 +160,9 @@ class Analytics : AppCompatActivity() {
             startActivity(intent)
         }
 
-        val moveToViewBudget = findViewById<Button>(R.id.btnViewBudget)
-        moveToViewBudget.setOnClickListener {
-            val intent = Intent(this, ViewBudget::class.java)
+        val moveToAdvancedAnalytics = findViewById<Button>(R.id.btnViewAdvancedAnalytics)
+        moveToAdvancedAnalytics.setOnClickListener {
+            val intent = Intent(this, AdvancedAnalytics::class.java)
             startActivity(intent)
         }
     }
