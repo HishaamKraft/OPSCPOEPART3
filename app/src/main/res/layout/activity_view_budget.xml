@@ -18,13 +18,16 @@
         android:id="@+id/btnClose"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:backgroundTint="#040404"
+        android:fontFamily="@font/alatsi"
         android:text="Close"
+        android:textSize="16sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.976" />
+        app:layout_constraintVertical_bias="0.989" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -42,30 +45,46 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.382" />
-
-    <TextView
-        android:id="@+id/textView7"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Budget List"
-        android:textSize="24sp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.531"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.06" />
+        app:layout_constraintVertical_bias="0.441" />
 
     <Button
         android:id="@+id/btnInvite"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:backgroundTint="#050505"
+        android:fontFamily="@font/alatsi"
         android:text="Invite Collaborators"
+        android:textSize="16sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.501"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.884" />
+        app:layout_constraintVertical_bias="0.906" />
+
+    <ImageView
+        android:id="@+id/imageView15"
+        android:layout_width="271dp"
+        android:layout_height="118dp"
+        app:layout_constraintBottom_toTopOf="@+id/listViewBudgets"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.497"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.842"
+        app:srcCompat="@drawable/s" />
+
+    <TextView
+        android:id="@+id/textView7"
+        android:layout_width="200dp"
+        android:layout_height="59dp"
+        android:fontFamily="@font/bagel_fat_one"
+        android:text="Budget List"
+        android:textColor="#0B0B0B"
+        android:textSize="36sp"
+        app:layout_constraintBottom_toTopOf="@+id/listViewBudgets"
+        app:layout_constraintEnd_toEndOf="@+id/imageView15"
+        app:layout_constraintHorizontal_bias="0.492"
+        app:layout_constraintStart_toStartOf="@+id/imageView15"
+        app:layout_constraintTop_toTopOf="@+id/imageView15"
+        app:layout_constraintVertical_bias="0.678" />
 </androidx.constraintlayout.widget.ConstraintLayout>
