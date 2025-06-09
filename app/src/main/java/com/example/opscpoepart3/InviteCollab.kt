@@ -50,19 +50,19 @@ class InviteCollab : AppCompatActivity() {
         }
 
         }
-    private fun showBadge(badge: Approved){
-        val badgeView =
+    private fun showApproval(approve: Approved){
+        val approveView =
             LayoutInflater.from(this).inflate(R.layout.activity_item_approved,null)
-        val icon = badgeView.findViewById<ImageView>(R.id.ApprovedIcon)
-        val title = badgeView.findViewById<TextView>(R.id.ApprovedTitle)
-        val desc = badgeView.findViewById<TextView>(R.id.ApprovedDescription)
+        val icon = approveView.findViewById<ImageView>(R.id.ApprovedIcon)
+        val title = approveView.findViewById<TextView>(R.id.ApprovedTitle)
+        val desc = approveView.findViewById<TextView>(R.id.ApprovedDescription)
 
-        icon.setImageResource(badge.imageResId)
-        title.text = badge.title
-        desc.text = badge.description
+        icon.setImageResource(approve.imageResId)
+        title.text = approve.title
+        desc.text = approve.description
 
         AlertDialog.Builder(this).setTitle("You've sent an invite!")
-            .setView(badgeView)
+            .setView(approveView)
             .setPositiveButton("Awesome!"){dialog, _ ->
                 dialog.dismiss()
             }
@@ -70,12 +70,12 @@ class InviteCollab : AppCompatActivity() {
     }
 
     fun onGoalCompleted(){
-        val badge = Approved(
+        val approve = Approved(
             title = "Invite Sent!",
             description = "Collaborator will join you soon",
             imageResId = R.drawable.img
         )
-        showBadge(badge)
+        showApproval(approve)
     }
 
 }

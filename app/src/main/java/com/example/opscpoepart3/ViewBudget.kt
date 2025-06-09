@@ -37,6 +37,11 @@ class ViewBudget : AppCompatActivity() {
         btnClose.setOnClickListener {
             startActivity(Intent(this, LandingPage::class.java))
         }
+        val invite = findViewById<Button>(R.id.btnInvite)
+        invite.setOnClickListener {
+            val intent = Intent(this,InviteCollab::class.java)
+            startActivity(intent)
+        }
     }
 
     private fun loadBudgetData() {
