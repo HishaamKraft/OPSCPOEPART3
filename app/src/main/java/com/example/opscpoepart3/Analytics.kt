@@ -12,7 +12,11 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.lifecycleScope
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.DatabaseReference
+import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.ValueEventListener
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -34,6 +38,8 @@ class Analytics : AppCompatActivity() {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
+
+        database = FirebaseDatabase.getInstance().getReference("Expenses")
 
         val startDateSelection = findViewById<Button>(R.id.btnStartDate)
         val startDateDisplay = findViewById<TextView>(R.id.txtStartDateDisplay)
@@ -65,6 +71,7 @@ class Analytics : AppCompatActivity() {
         }
 
         val display = findViewById<Button>(R.id.btnDisplayExpenses)
+        val txtExpenseResults = findViewById<TextView>(R.id.txtExpensesDisplay)
 
         display.setOnClickListener {
             val startDateText = startDateDisplay.text.toString()
@@ -76,68 +83,81 @@ class Analytics : AppCompatActivity() {
                 return@setOnClickListener
             }
 
-            val format = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
-            val startDate = format.parse(startDateText)
-            val endDate = format.parse(endDateText)
-            val txtExpenseResults = findViewById<TextView>(R.id.txtExpensesDisplay)
+            val inputFormat = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
+            val outputFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
 
+            val startDate = try {
+                inputFormat.parse(startDateText)
+            } catch (e: Exception) {
+                null
+            }
+            val endDate = try {
+                inputFormat.parse(endDateText)
+            } catch (e: Exception) {
+                null
+            }
 
-            if (startDate != null && endDate != null) {
-                when {
-                    startDate == endDate -> {
-                        Toast.makeText(
-                            this,
-                            "Start date cannot be equal to end date.",
-                            Toast.LENGTH_SHORT
-                        ).show()
-                        return@setOnClickListener
-                    }
+            if (startDate == null || endDate == null) {
+                Toast.makeText(this, "Date format is invalid.", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
 
-                    startDate.after(endDate) -> {
-                        Toast.makeText(
-                            this,
-                            "Start date cannot be after end date.",
-                            Toast.LENGTH_SHORT
-                        ).show()
-                        return@setOnClickListener
-                    }
-
-                    endDate.before(startDate) -> {
-                        Toast.makeText(
-                            this,
-                            "End date cannot be before start date.",
-                            Toast.LENGTH_SHORT
-                        ).show()
-                        return@setOnClickListener
-
-                    }
-                    else -> {
-                        // Valid range - proceed with query
-                        /*lifecycleScope.launch {
-                            val expensesBetween = withContext(Dispatchers.IO) {
-                                expensesDao.getExpensesBetweenDates(startDate, endDate)
-                            }
-
-                            if (expensesBetween.isEmpty()) {
-                                txtExpenseResults.text = "No expenses found in this range."
-                            } else {
-                                val formattedText = expensesBetween.joinToString("\n\n") { expense ->
-                                    "Date: ${expense.expenseDate}\n" +
-                                            "Category: ${expense.categoryItem}\n" +
-                                            "Description: ${expense.description}\n" +
-                                            "Amount: R${expense.amount}"
-                                }
-
-                                txtExpenseResults.text = formattedText
-
-                            }
-                        }*/
-
-
-                    }
+            when {
+                startDate == endDate -> {
+                    Toast.makeText(this, "Start date cannot be equal to end date.", Toast.LENGTH_SHORT).show()
+                    return@setOnClickListener
+                }
+                startDate.after(endDate) -> {
+                    Toast.makeText(this, "Start date cannot be after end date.", Toast.LENGTH_SHORT).show()
+                    return@setOnClickListener
                 }
             }
+
+            val formattedStartDate = outputFormat.format(startDate)
+            val formattedEndDate = outputFormat.format(endDate)
+
+            // Clear previous results
+            txtExpenseResults.text = "Loading expenses..."
+
+            // Query Firebase RTDB for expenses between formattedStartDate and formattedEndDate
+            val query = database.orderByChild("date").startAt(formattedStartDate).endAt(formattedEndDate)
+            query.addListenerForSingleValueEvent(object : ValueEventListener {
+                override fun onDataChange(snapshot: DataSnapshot) {
+                    if (!snapshot.exists()) {
+                        txtExpenseResults.text = "No expenses found in this date range."
+                        return
+                    }
+
+                    val expensesList = mutableListOf<String>()
+
+                    for (expenseSnapshot in snapshot.children) {
+                        val expense = expenseSnapshot.getValue(ExpensesData::class.java)
+                        if (expense != null) {
+                            // Build a formatted string for each expense
+                            val formattedAmount = String.format(Locale.getDefault(), "%.2f", expense.amount ?: 0.0)
+
+                            val expenseText = "Date: ${expense.date}\n" +
+                                    "Category: ${expense.category}\n" +
+                                    "Description: ${expense.description}\n" +
+                                    "Amount: R$formattedAmount"
+                            expensesList.add(expenseText)
+                        }
+                    }
+
+                    if (expensesList.isEmpty()) {
+                        txtExpenseResults.text = "No expenses found in this date range."
+                    } else {
+                        txtExpenseResults.text = expensesList.joinToString(separator = "\n\n")
+                    }
+                }
+
+                override fun onCancelled(error: DatabaseError) {
+                    txtExpenseResults.text = ""
+                    Toast.makeText(this@Analytics, "Failed to load expenses: ${error.message}", Toast.LENGTH_SHORT).show()
+                }
+            })
         }
+
         val returnToLanding = findViewById<Button>(R.id.btnReturn2)
         returnToLanding.setOnClickListener {
             val intent = Intent(this, LandingPage::class.java)
@@ -150,5 +170,4 @@ class Analytics : AppCompatActivity() {
             startActivity(intent)
         }
     }
-
 }

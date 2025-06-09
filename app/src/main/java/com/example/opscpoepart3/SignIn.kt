@@ -72,7 +72,7 @@ class SignIn : AppCompatActivity() {
                 return@setOnClickListener
             }
 
-            auth.createUserWithEmailAndPassword(username, confirmPassword)
+            auth.createUserWithEmailAndPassword(email, confirmPassword)
                 .addOnCompleteListener { task ->
                     if (task.isSuccessful) {
                         Toast.makeText(this, "Registered Successfully!", Toast.LENGTH_SHORT).show()

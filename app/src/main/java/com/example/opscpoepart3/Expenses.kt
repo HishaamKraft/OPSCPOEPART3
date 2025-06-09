@@ -165,7 +165,7 @@ class Expenses : AppCompatActivity() {
             if(dateString.isNotEmpty() && category.isNotEmpty() && expenseDescription.isNotEmpty() && expenseAmount.isNotEmpty())
             {
                 val expenseId = database.push().key
-                val expenseData = ExpensesData(formattedDateForDB,category,expenseDescription,expenseAmount)
+                val expenseData = ExpensesData(formattedDateForDB,category,expenseDescription,amount)
 
                 if(expenseId != null){
                     database.child(expenseId).setValue(expenseData)

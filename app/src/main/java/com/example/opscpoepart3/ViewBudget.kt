@@ -19,6 +19,7 @@ class ViewBudget : AppCompatActivity() {
     private lateinit var database: DatabaseReference
     private lateinit var budgetListView: ListView
     private lateinit var budgetList: ArrayList<String>
+    private lateinit var btnClose: Button
 
     @SuppressLint("MissingInflatedId")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -26,18 +27,31 @@ class ViewBudget : AppCompatActivity() {
         setContentView(R.layout.activity_view_budget)
 
         budgetListView = findViewById(R.id.listViewBudgets)
+        btnClose = findViewById(R.id.btnClose)
         budgetList = ArrayList()
 
         database = FirebaseDatabase.getInstance().getReference("Budgets")
 
+        loadBudgetData()
+
+        btnClose.setOnClickListener {
+            startActivity(Intent(this, LandingPage::class.java))
+        }
+    }
+
+    private fun loadBudgetData() {
         database.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 budgetList.clear()
                 for (budgetSnapshot in snapshot.children) {
                     val budget = budgetSnapshot.getValue(BudgetData::class.java)
                     budget?.let {
-                        val display = "Category: ${it.category}\nMin: ${it.minGoal}, Max: ${it.maxGoal}"
-                        budgetList.add(display)
+                        val displayText = """
+                            Category: ${it.category}
+                            Min Goal: R${String.format("%.2f", it.minGoal)}
+                            Max Goal: R${String.format("%.2f", it.maxGoal)}
+                        """.trimIndent()
+                        budgetList.add(displayText)
                     }
                 }
 
@@ -46,16 +60,10 @@ class ViewBudget : AppCompatActivity() {
             }
 
             override fun onCancelled(error: DatabaseError) {
-                Toast.makeText(this@ViewBudget, "Failed to load data", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this@ViewBudget, "Failed to load data: ${error.message}", Toast.LENGTH_SHORT).show()
             }
         })
-
-        val close = findViewById<Button>(R.id.btnClose)
-        close?.setOnClickListener{
-            val intent = Intent( this,LandingPage::class.java)
-            startActivity(intent)
-        }
-
-
     }
 }
+
+
