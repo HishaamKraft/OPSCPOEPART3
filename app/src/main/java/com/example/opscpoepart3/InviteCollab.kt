@@ -1,6 +1,7 @@
 package com.example.opscpoepart3
 
 import android.app.AlertDialog
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.widget.ArrayAdapter
@@ -17,17 +18,30 @@ class InviteCollab : AppCompatActivity() {
     private lateinit var roleSpinner: Spinner
     private lateinit var messageInput: EditText
     private lateinit var sendButton: Button
+    private lateinit var returnButton: Button
 
-    private val roles = listOf("Viewer", "Editor", "Admin")
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_invite_collab)
 
+
         emailInput = findViewById(R.id.edtEmailAddress)
         roleSpinner = findViewById(R.id.spinnerRole)
         messageInput = findViewById(R.id.edtMessage)
         sendButton = findViewById(R.id.btnSendInvite)
+        returnButton = findViewById(R.id.btnReturnHome)
+
+        returnButton.setOnClickListener {
+            startActivity(Intent(this, LandingPage::class.java))
+        }
+
+        val roles = arrayOf(
+            "Viewer",
+            "Editor",
+            "Admin"
+        )
 
         val adapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, roles)
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
@@ -49,7 +63,8 @@ class InviteCollab : AppCompatActivity() {
             onGoalCompleted()
         }
 
-        }
+
+    }
     private fun showApproval(approve: Approved){
         val approveView =
             LayoutInflater.from(this).inflate(R.layout.activity_item_approved,null)
